@@ -1,0 +1,73 @@
+{
+  "threads": [
+    {
+      "subject": "Corporate stay plan (Oct–Dec) — quick check",
+      "sender": "noreply@company.com",
+      "recipient": "sales@sunrisehotel.com",
+      "body": "Initial outreach about corporate rates and stay plans.",
+      "messages": [
+        {
+          "sender": "sales@sunrisehotel.com",
+          "recipient": "noreply@company.com",
+          "body": "Interested. Can you share an updated price list with breakfast included and late checkout info?"
+        }
+      ]
+    },
+
+    {
+      "subject": "Cancellation request for booking #4521",
+      "sender": "guest@example.com",
+      "recipient": "support@sunrisehotel.com",
+      "body": "Please cancel my reservation.",
+      "messages": [
+        {
+          "sender": "guest@example.com",
+          "recipient": "support@sunrisehotel.com",
+          "body": "I'm no longer interested — please cancel my booking and confirm refund options."
+        }
+      ]
+    },
+
+    {
+      "subject": "Urgent: Noise complaint in room 305",
+      "sender": "guest2@example.com",
+      "recipient": "frontdesk@sunrisehotel.com",
+      "body": "Very loud noise at night",
+      "messages": [
+        {
+          "sender": "guest2@example.com",
+          "recipient": "frontdesk@sunrisehotel.com",
+          "body": "This is urgent. I want to speak to a manager about the noise in room 305 — please escalate."
+        }
+      ]
+    },
+
+    {
+      "subject": "Group availability request — conference",
+      "sender": "events@travelagency.com",
+      "recipient": "sales@sunrisehotel.com",
+      "body": "Looking for block booking availability",
+      "messages": [
+        {
+          "sender": "events@travelagency.com",
+          "recipient": "sales@sunrisehotel.com",
+          "body": "Can you confirm availability for 20 rooms from 2025-11-10 to 2025-11-15? Need breakfast and extra beds. Also please provide group rates in EUR."
+        }
+      ]
+    },
+
+    {
+      "subject": "Conference room rental / pricing",
+      "sender": "corporate@bigco.com",
+      "recipient": "sales@sunrisehotel.com",
+      "body": "Inquiry about conference room and catering",
+      "messages": [
+        {
+          "sender": "corporate@bigco.com",
+          "recipient": "sales@sunrisehotel.com",
+          "body": "Could you send pricing for conference room rental, including catering options and group discounts? Prefer cost in EUR."
+        }
+      ]
+    }
+  ]
+}
