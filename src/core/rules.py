@@ -1,4 +1,4 @@
-from typing import Dict, Any, Tuple
+from typing import Any, Dict, Tuple
 
 
 def rule_based_intent_and_action(text: str) -> Tuple[str, float, str]:
@@ -30,10 +30,12 @@ def rule_based_intent_and_action(text: str) -> Tuple[str, float, str]:
 
     return "unknown", 0.0, "no-action"
 
+
 class ActionRule:
     def __init__(self, intent: str, action: str):
         self.intent = intent
         self.action = action
+
 
 class RulesEngine:
     def __init__(self):

@@ -24,7 +24,7 @@ def setup_logger(name: str = "email-orchestrator") -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     if not logger.handlers:
-        fmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fmt = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         console = logging.StreamHandler()
         console.setFormatter(fmt)
         console.setLevel(logging.INFO)

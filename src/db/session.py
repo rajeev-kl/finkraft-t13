@@ -1,14 +1,17 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from decouple import config
-import sqlite3
 import os
+import sqlite3
+
+from decouple import config
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+
 from db import models
 
 DATABASE_URL = config("DATABASE_URL", default="sqlite:///./finkraft.db")
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+
 
 def get_db():
     db = SessionLocal()
@@ -38,7 +41,7 @@ def ensure_db_schema():
             cur = conn.cursor()
             cur.execute("PRAGMA table_info('ai_suggestions')")
             cols = [r[1] for r in cur.fetchall()]
-            if 'raw_response' not in cols:
+            if "raw_response" not in cols:
                 cur.execute("ALTER TABLE ai_suggestions ADD COLUMN raw_response TEXT")
                 conn.commit()
             cur.close()

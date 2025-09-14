@@ -1,21 +1,23 @@
+import json
+from typing import Dict, List, Optional
+
 from openai import AzureOpenAI
+from pydantic import BaseModel
+
 from config.settings import (
     AZURE_OPENAI_CHAT_API_KEY,
     AZURE_OPENAI_CHAT_API_VERSION,
     AZURE_OPENAI_CHAT_DEPLOYMENT,
     AZURE_OPENAI_CHAT_ENDPOINT,
 )
-
 from core.logger import logger
-from typing import List, Dict, Optional
-from pydantic import BaseModel
-import json
 
 client = AzureOpenAI(
     api_key=AZURE_OPENAI_CHAT_API_KEY,
     api_version=AZURE_OPENAI_CHAT_API_VERSION,
     azure_endpoint=AZURE_OPENAI_CHAT_ENDPOINT,
 )
+
 
 class FieldSpec(BaseModel):
     name: str
@@ -31,6 +33,7 @@ class IntentResponse(BaseModel):
     required_fields_responder: Optional[List[FieldSpec]] = None
     follow_up_question: Optional[str] = None
 
+
 def get_intent(messages: List[Dict[str, str]], system_prompt: Optional[str] = None) -> IntentResponse:
     """
     Sends messages to the chat model and requests a compact JSON describing:
@@ -44,12 +47,15 @@ def get_intent(messages: List[Dict[str, str]], system_prompt: Optional[str] = No
     """
     if system_prompt is None:
         system_prompt = (
-            "You are an email assistant that MUST output a single JSON object (no extra text) describing the user's intent. "
-            "Return the keys: intent (string), confidence (0-1 float), suggested_action (one of: send_pricing, ask_for_details, close_thread, escalate_to_ops, no-action), "
-            "required_fields_customer (array of objects with keys: name (short id), hint (short human hint), required (boolean)), "
-            "required_fields_responder (array of objects with keys: name, hint, required) — these are fields the responder/agent should fill (internal notes). "
-            "follow_up_question (string) — a concise question to ask if more info is needed from the customer. "
-            "Be conservative with confidence. Only include required fields that are actually missing and relevant. Return valid JSON only."
+            "You are an email assistant that MUST output a single JSON object (no extra text) "
+            "describing the user's intent. Return the keys: intent (string), confidence (0-1 float), "
+            "suggested_action (one of: send_pricing, ask_for_details, close_thread, escalate_to_ops, "
+            "no-action), required_fields_customer (array of objects with keys: name (short id), "
+            "hint (short human hint), required (boolean)), required_fields_responder (array of objects "
+            "with keys: name, hint, required) — these are fields the responder/agent should fill "
+            "(internal notes). follow_up_question (string) — a concise question to ask if more info "
+            "is needed from the customer. Be conservative with confidence. Only include required fields "
+            "that are actually missing and relevant. Return valid JSON only."
         )
 
     # ensure the system message is first
@@ -131,6 +137,7 @@ def get_intent(messages: List[Dict[str, str]], system_prompt: Optional[str] = No
                 except Exception:
                     # fallback to searching for a JSON substring
                     import re
+
                     m = re.search(r"\{.*\}", content, flags=re.S)
                     if m:
                         intent_data = json.loads(m.group(0))
@@ -161,18 +168,22 @@ def generate_reply_draft(suggestion: str, original_message: str, tone: str = "pr
     prompt = (
         f"You are an assistant that writes a concise, clear email reply. The suggested action is: '{suggestion}'.\n"
         f"The original user message is:\n'''{original_message}'''\n"
-        f"Write a reply in a {tone} tone that accomplishes the suggested action. Return only the email body text.")
+        f"Write a reply in a {tone} tone that accomplishes the suggested action. Return only the email body text."
+    )
     try:
         resp = client.chat.completions.create(
             model=AZURE_OPENAI_CHAT_DEPLOYMENT,
-            messages=[{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt},
+            ],
         )
         # Try several common shapes
-        if getattr(resp, 'choices', None):
+        if getattr(resp, "choices", None):
             c = resp.choices[0]
-            if hasattr(c, 'message') and hasattr(c.message, 'content'):
+            if hasattr(c, "message") and hasattr(c.message, "content"):
                 return c.message.content
-            if hasattr(c, 'text'):
+            if hasattr(c, "text"):
                 return c.text
         # fallback to the raw string
         return str(resp)

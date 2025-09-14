@@ -1,13 +1,14 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Float
+import datetime
+
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-import datetime
 
 Base = declarative_base()
 
 
 class EmailThread(Base):
-    __tablename__ = 'email_threads'
+    __tablename__ = "email_threads"
 
     id = Column(Integer, primary_key=True, index=True)
     subject = Column(String, index=True)
@@ -22,10 +23,10 @@ class EmailThread(Base):
 
 
 class EmailMessage(Base):
-    __tablename__ = 'email_messages'
+    __tablename__ = "email_messages"
 
     id = Column(Integer, primary_key=True, index=True)
-    thread_id = Column(Integer, ForeignKey('email_threads.id'))
+    thread_id = Column(Integer, ForeignKey("email_threads.id"))
     sender = Column(String)
     recipient = Column(String)
     body = Column(Text)
@@ -36,10 +37,10 @@ class EmailMessage(Base):
 
 
 class AISuggestion(Base):
-    __tablename__ = 'ai_suggestions'
+    __tablename__ = "ai_suggestions"
 
     id = Column(Integer, primary_key=True, index=True)
-    message_id = Column(Integer, ForeignKey('email_messages.id'))
+    message_id = Column(Integer, ForeignKey("email_messages.id"))
     intent = Column(String)
     confidence = Column(Float)
     suggested_action = Column(String)
@@ -52,10 +53,10 @@ class AISuggestion(Base):
 
 
 class UserDecision(Base):
-    __tablename__ = 'user_decisions'
+    __tablename__ = "user_decisions"
 
     id = Column(Integer, primary_key=True, index=True)
-    suggestion_id = Column(Integer, ForeignKey('ai_suggestions.id'))
+    suggestion_id = Column(Integer, ForeignKey("ai_suggestions.id"))
     user = Column(String)
     decision = Column(String)  # e.g., 'accept', 'override:reply_with_details'
     note = Column(Text, nullable=True)
@@ -63,26 +64,26 @@ class UserDecision(Base):
 
 
 class Action(Base):
-    __tablename__ = 'actions'
+    __tablename__ = "actions"
 
     id = Column(Integer, primary_key=True, index=True)
-    thread_id = Column(Integer, ForeignKey('email_threads.id'))
+    thread_id = Column(Integer, ForeignKey("email_threads.id"))
     action_type = Column(String)
-    status = Column(String, default='pending')
+    status = Column(String, default="pending")
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     thread = relationship("EmailThread", back_populates="actions")
 
 
 class EmailDraft(Base):
-    __tablename__ = 'email_drafts'
+    __tablename__ = "email_drafts"
 
     id = Column(Integer, primary_key=True, index=True)
-    thread_id = Column(Integer, ForeignKey('email_threads.id'))
-    message_id = Column(Integer, ForeignKey('email_messages.id'), nullable=True)
-    suggestion_id = Column(Integer, ForeignKey('ai_suggestions.id'), nullable=True)
+    thread_id = Column(Integer, ForeignKey("email_threads.id"))
+    message_id = Column(Integer, ForeignKey("email_messages.id"), nullable=True)
+    suggestion_id = Column(Integer, ForeignKey("ai_suggestions.id"), nullable=True)
     body = Column(Text)
-    status = Column(String, default='draft')  # draft | sent
+    status = Column(String, default="draft")  # draft | sent
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow)
     sent_at = Column(DateTime, nullable=True)
